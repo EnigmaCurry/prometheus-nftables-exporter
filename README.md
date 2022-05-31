@@ -2,12 +2,19 @@
 
 A Prometheus Exporter that exposes metrics from [nftables](https://nftables.org/projects/nftables/index.html).
 
+This is a fork from [dadevel/prometheus-nftables-exporter](https://github.com/dadevel/prometheus-nftables-exporter) (having since been archived)
+
+This uses the [GeoLite2 Free Geolocation Database published by
+MaxMind](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data)
+(requires free account to download/update this database).
+
 ![Example Grafana Dashboard Screenshot](./images/grafana.png)
 
 ## Setup
 
-Just start the docker container.
-It requires the `net_admin` capability and must be part of the host network namespace in order to collect data from nftables.
+Just start the docker container. It requires the `net_admin`
+capability and must be part of the host network namespace in order to
+collect data from nftables.
 
 ~~~ bash
 docker run -d -p 9639 --cap-drop all --cap-add net_admin --network host ghcr.io/dadevel/nftables-exporter
@@ -19,10 +26,12 @@ And test it.
 curl http://localhost:9630/metrics
 ~~~
 
-nftables-exporter can annotate ip addresses in nftables maps, meters and sets with a country code.
-You can use this for example with the [Grafana Worldmap Panel](https://github.com/grafana/worldmap-panel).
-Unfortunately you have provide a (free) MaxMind license key.
-See [here](https://dev.maxmind.com/geoip/geoip2/geolite2/) for more information.
+nftables-exporter can annotate ip addresses in nftables maps, meters
+and sets with a country code. You can use this for example with the
+[Grafana Worldmap Panel](https://github.com/grafana/worldmap-panel).
+Unfortunately you have provide a (free) MaxMind license key. See
+[here](https://dev.maxmind.com/geoip/geoip2/geolite2/) for more
+information.
 
 ~~~ bash
 docker run -d -p 9639 --cap-drop all --cap-add net_admin --network host -e MAXMIND_LICENSE_KEY=INSERT_YOUR_KEY_HERE ghcr.io/dadevel/nftables-exporter
@@ -75,7 +84,9 @@ nftables_meter_elements{family="ip", name="http-limit", table="filter", type="ip
 nftables_meter_elements{family="ip6", name="http6-limit", table="filter", type="ipv6_addr", country="US"} 2
 ~~~
 
-**Notice:** Since v2.0.0 `nftables_counter_bytes` and `nftables_counter_packets` are proper Prometheus counters and therefore got a `_total` suffix.
+**Notice:** Since v2.0.0 `nftables_counter_bytes` and
+`nftables_counter_packets` are proper Prometheus counters and
+therefore got a `_total` suffix.
 
 ## Build
 
@@ -85,5 +96,3 @@ Install the dependencies and run the python script.
 pip3 install -r ./requirements.txt
 python3 ./main.py
 ~~~
-
-The `Dockerfile` is available under [github.com/dadevel/dockerfiles](https://github.com/dadevel/dockerfiles/tree/main/nftables-exporter).
